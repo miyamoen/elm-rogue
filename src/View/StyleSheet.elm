@@ -16,6 +16,7 @@ type Styles
     | Board
     | BoxStyle
     | PlayerStyle
+    | PlayerBoxStyle
 
 
 styleSheet : StyleSheet Styles variation
@@ -31,6 +32,8 @@ styleSheet =
             [ zIndex 1
             , Color.background Colors.primary
             ]
+        , style PlayerBoxStyle
+            [ Transition.all ]
         ]
 
 

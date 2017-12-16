@@ -19,7 +19,7 @@ type Msg
 
 
 type Box
-    = Simple
+    = BaseBox
 
 
 type alias Coord =

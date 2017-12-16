@@ -15,15 +15,15 @@ import Keyboard.Key as Key
 
 initBoard : Board
 initBoard =
-    [ Coord 0 0 => Simple
-    , Coord 0 1 => Simple
-    , Coord 0 2 => Simple
-    , Coord 1 0 => Simple
-    , Coord 1 1 => Simple
-    , Coord 1 2 => Simple
-    , Coord 2 0 => Simple
-    , Coord 2 1 => Simple
-    , Coord 2 2 => Simple
+    [ Coord 0 0 => BaseBox
+    , Coord 0 1 => BaseBox
+    , Coord 0 2 => BaseBox
+    , Coord 1 0 => BaseBox
+    , Coord 1 1 => BaseBox
+    , Coord 1 2 => BaseBox
+    , Coord 2 0 => BaseBox
+    , Coord 2 1 => BaseBox
+    , Coord 2 2 => BaseBox
     ]
 
 
@@ -120,11 +120,10 @@ subscriptions model =
                     let
                         _ =
                             Debug.log "unused key" key
+
                         _ =
                             Debug.log "unused key code" code
-
                     in
-
                         NoOp
         )
 
