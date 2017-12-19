@@ -10,12 +10,14 @@ type alias Model =
 
 type alias Player =
     { coord : Coord
+    , direction : Direction
     }
 
 
 type Msg
     = NoOp
     | MovePlayer Coord Direction
+    | ChangePlayerDirection Direction
 
 
 type Box

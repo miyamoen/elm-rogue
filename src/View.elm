@@ -6,21 +6,19 @@ import Element.Attributes as Attrs exposing (..)
 import Types exposing (..)
 import Accessor exposing (..)
 import View.StyleSheet exposing (..)
+import View.Svg.Symbol as Symbol exposing (Symbol(..))
 import Rocket exposing ((=>))
 import Monocle.Lens as Lens
 
 
 view : Model -> Html Msg
-view ({ board, size } as model) =
+view model =
     Element.viewport styleSheet <|
-        (grid Board
-            [ spacing boardSpacing, padding boardPadding ]
-            { columns = boardColumns size
-            , rows = boardRows size
-            , cells = List.map (box >> cell) board
-            }
-            |> within [ player model.player ]
-        )
+        column None
+            []
+            [ html <| Symbol.symbols
+            , board model
+            ]
 
 
 boardPadding : number
@@ -43,7 +41,18 @@ boardRows { height } =
     List.repeat height <| px 100
 
 
-box : ( Coord, Box ) -> GridPosition Styles variation Msg
+board : Model -> Element Styles Variation Msg
+board ({ board, size } as model) =
+    grid Board
+        [ spacing boardSpacing, padding boardPadding ]
+        { columns = boardColumns size
+        , rows = boardRows size
+        , cells = List.map (box >> cell) board
+        }
+        |> within [ player model.player ]
+
+
+box : ( Coord, Box ) -> GridPosition Styles Variation Msg
 box ( { x, y }, boxType ) =
     case boxType of
         BaseBox ->
@@ -55,7 +64,7 @@ box ( { x, y }, boxType ) =
             }
 
 
-playerGrid : Player -> GridPosition Styles variation Msg
+playerGrid : Player -> GridPosition Styles Variation Msg
 playerGrid p =
     { start = ( playerX.get p, playerY.get p )
     , width = 1
@@ -69,14 +78,27 @@ playerGrid p =
     }
 
 
-player : Player -> Element Styles variation Msg
-player { coord } =
-    el PlayerBoxStyle
+player : Player -> Element Styles Variation Msg
+player { coord, direction } =
+    (el PlayerBoxStyle
         [ width <| px 100
         , height <| px 100
         , moveDown <| toFloat <| boardPadding + coord.y * (boardSpacing + 100)
         , moveRight <| toFloat <| boardPadding + coord.x * (boardSpacing + 100)
         ]
-    <|
-        circle 30 PlayerStyle [ center, verticalCenter ] <|
-            text "player"
+     <|
+        circle 30
+            PlayerStyle
+            [ center, verticalCenter ]
+            (text "player")
+    )
+        |> within
+            [ el MoveAngleStyle
+                [ vary UpVar <| direction == Up
+                , vary DownVar <| direction == Down
+                , vary RightVar <| direction == Right
+                , vary LeftVar <| direction == Left
+                ]
+              <|
+                Symbol.angleElement
+            ]

@@ -21,6 +21,13 @@ playerCoord =
     }
 
 
+playerDirection : Lens Player Direction
+playerDirection =
+    { get = .direction
+    , set = \direction player -> { player | direction = direction }
+    }
+
+
 coordX : Lens Coord Int
 coordX =
     { get = .x

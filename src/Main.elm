@@ -6,8 +6,7 @@ import Types exposing (..)
 import Accessor exposing (..)
 import Rocket exposing ((=>), batchInit, batchUpdate)
 import Monocle.Lens as Lens
-import Keyboard
-import Keyboard.Key as Key
+import Controller.Keyboard
 
 
 ---- MODEL ----
@@ -29,7 +28,9 @@ initBoard =
 
 initPlayer : Player
 initPlayer =
-    { coord = Coord 2 2 }
+    { coord = Coord 2 2
+    , direction = Up
+    }
 
 
 init : ( Model, List (Cmd Msg) )
@@ -61,6 +62,10 @@ update msg model =
             }
                 => []
 
+        ChangePlayerDirection dir ->
+            { model | player = Lens.modify Accessor.playerDirection (\_ -> dir) model.player }
+                => []
+
 
 playerCanMove : Direction -> Model -> Bool
 playerCanMove dir { size, player } =
@@ -89,43 +94,9 @@ move dir ({ x, y } as coord) =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Keyboard.presses
-        (\code ->
-            case Key.fromCode code of
-                Key.Up ->
-                    MovePlayer model.player.coord Up
-
-                Key.Down ->
-                    MovePlayer model.player.coord Down
-
-                Key.Left ->
-                    MovePlayer model.player.coord Left
-
-                Key.Right ->
-                    MovePlayer model.player.coord Right
-
-                Key.K ->
-                    MovePlayer model.player.coord Up
-
-                Key.J ->
-                    MovePlayer model.player.coord Down
-
-                Key.H ->
-                    MovePlayer model.player.coord Left
-
-                Key.L ->
-                    MovePlayer model.player.coord Right
-
-                key ->
-                    let
-                        _ =
-                            Debug.log "unused key" key
-
-                        _ =
-                            Debug.log "unused key code" code
-                    in
-                        NoOp
-        )
+    Sub.batch
+        [ Controller.Keyboard.subscriptions model
+        ]
 
 
 
