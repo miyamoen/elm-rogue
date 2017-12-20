@@ -7,6 +7,7 @@ import Accessor exposing (..)
 import Rocket exposing ((=>), batchInit, batchUpdate)
 import Monocle.Lens as Lens
 import Controller.Keyboard
+import List.Extra exposing (lift2)
 
 
 ---- MODEL ----
@@ -14,16 +15,19 @@ import Controller.Keyboard
 
 initBoard : Board
 initBoard =
-    [ Coord 0 0 => BaseBox
-    , Coord 0 1 => BaseBox
-    , Coord 0 2 => BaseBox
-    , Coord 1 0 => BaseBox
-    , Coord 1 1 => BaseBox
-    , Coord 1 2 => BaseBox
-    , Coord 2 0 => BaseBox
-    , Coord 2 1 => BaseBox
-    , Coord 2 2 => BaseBox
-    ]
+    let
+        xs =
+            List.range 0 <| size.width - 1
+
+        ys =
+            List.range 0 <| size.height - 1
+    in
+        lift2 (\x y -> Coord x y => BaseBox) xs ys
+
+
+size : Size
+size =
+    { width = 16, height = 16 }
 
 
 initPlayer : Player
@@ -36,7 +40,7 @@ initPlayer =
 init : ( Model, List (Cmd Msg) )
 init =
     { board = initBoard
-    , size = { width = 3, height = 3 }
+    , size = size
     , player = initPlayer
     }
         => []

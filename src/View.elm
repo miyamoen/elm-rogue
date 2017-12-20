@@ -5,6 +5,7 @@ import Element exposing (..)
 import Element.Attributes as Attrs exposing (..)
 import Types exposing (..)
 import Accessor exposing (..)
+import View.Config exposing (..)
 import View.StyleSheet exposing (..)
 import View.Svg.Symbol as Symbol exposing (Symbol(..))
 import Rocket exposing ((=>))
@@ -21,24 +22,14 @@ view model =
             ]
 
 
-boardPadding : number
-boardPadding =
-    20
-
-
-boardSpacing : number
-boardSpacing =
-    10
-
-
 boardColumns : Size -> List Length
 boardColumns { width } =
-    List.repeat width <| px 100
+    List.repeat width <| px boxSize
 
 
 boardRows : Size -> List Length
 boardRows { height } =
-    List.repeat height <| px 100
+    List.repeat height <| px boxSize
 
 
 board : Model -> Element Styles Variation Msg
@@ -60,41 +51,32 @@ box ( { x, y }, boxType ) =
             , width = 1
             , height = 1
             , content =
-                el BoxStyle [] <| text <| toString ( x, y )
+                el BoxStyle [] <|
+                    -- (text <| toString ( x, y ))
+                    empty
             }
-
-
-playerGrid : Player -> GridPosition Styles Variation Msg
-playerGrid p =
-    { start = ( playerX.get p, playerY.get p )
-    , width = 1
-    , height = 1
-    , content =
-        row PlayerBoxStyle
-            [ center
-            , verticalCenter
-            ]
-            [ circle 30 PlayerStyle [] <| text "player" ]
-    }
 
 
 player : Player -> Element Styles Variation Msg
 player { coord, direction } =
     (el PlayerBoxStyle
-        [ width <| px 100
-        , height <| px 100
-        , moveDown <| toFloat <| boardPadding + coord.y * (boardSpacing + 100)
-        , moveRight <| toFloat <| boardPadding + coord.x * (boardSpacing + 100)
+        [ width <| px boxSize
+        , height <| px boxSize
+        , moveDown <| toFloat <| boardPadding + coord.y * (boardSpacing + boxSize)
+        , moveRight <| toFloat <| boardPadding + coord.x * (boardSpacing + boxSize)
         ]
      <|
-        circle 30
+        circle (boxSize * 0.3)
             PlayerStyle
             [ center, verticalCenter ]
-            (text "player")
+            -- (text "player")
+            empty
     )
         |> within
             [ el MoveAngleStyle
-                [ vary UpVar <| direction == Up
+                [ width <| px boxSize
+                , height <| px boxSize
+                , vary UpVar <| direction == Up
                 , vary DownVar <| direction == Down
                 , vary RightVar <| direction == Right
                 , vary LeftVar <| direction == Left

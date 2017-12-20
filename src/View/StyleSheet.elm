@@ -1,5 +1,6 @@
 module View.StyleSheet exposing (..)
 
+import View.Config exposing (..)
 import View.Colors as Colors
 import Color.Mixing as Mixing
 import Style exposing (..)
@@ -47,8 +48,9 @@ styleSheet =
             [ strokeFill Colors.info
             , strokeWidth 7
             , fill <| rgba 0 0 0 0
-            , translate 0 -30 0
-            , scale 0.7 0.7 1
+
+            -- , translate 0 (-0.3 * boxSize) 0
+            -- , scale 0.7 0.7 1
             , variation UpVar []
             , variation DownVar
                 [ rotate <| degrees 180 ]

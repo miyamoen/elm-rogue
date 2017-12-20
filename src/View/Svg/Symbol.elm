@@ -7,6 +7,7 @@ import Svg.Attributes
 import TypedSvg exposing (..)
 import TypedSvg.Attributes exposing (viewBox, points, xlinkHref)
 import TypedSvg.Attributes.InPx exposing (x, y, width, height, strokeWidth)
+import View.Config exposing (..)
 import Rocket exposing ((=>))
 
 
@@ -58,6 +59,6 @@ angle =
 
 angleElement : Element s v m
 angleElement =
-    svg [ viewBox 0 0 100 100, width 100, height 100 ]
+    svg [ viewBox 0 0 100 100, width boxSize, height boxSize ]
         [ use [ xlinkHref <| toSelector Angle ] [] ]
         |> html
