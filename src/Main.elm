@@ -3,7 +3,8 @@ module Main exposing (..)
 import Html
 import View exposing (view)
 import Types exposing (..)
-import Accessor exposing (..)
+import Types.Accessor as Accessor
+import Types.Coord as Coord
 import Rocket exposing ((=>), batchInit, batchUpdate)
 import Monocle.Lens as Lens
 import Monocle.Optional as Optional
@@ -16,10 +17,10 @@ import List.Extra exposing (lift2)
 
 initBoard : Board
 initBoard =
-    lift2 (\x y -> Box (Coord x y) BaseBox)
+    lift2 (\x y -> Box (Coord x y) GroundBox)
         (List.range 0 <| size.width - 1)
         (List.range 0 <| size.height - 1)
-        |> .set (Accessor.boardBoxStatus { x = 1, y = 1 }) GroundBox
+        |> .set (Accessor.boardBoxStatus { x = 1, y = 1 }) CultivatedBox
 
 
 size : Size
@@ -57,7 +58,7 @@ update msg model =
             { model
                 | player =
                     if coord == model.player.coord && playerCanMove dir model then
-                        Lens.modify Accessor.playerCoord (\coord -> move dir coord) model.player
+                        Lens.modify Accessor.playerCoord (\coord -> Coord.move dir coord) model.player
                     else
                         model.player
             }
@@ -67,30 +68,28 @@ update msg model =
             { model | player = Lens.modify Accessor.playerDirection (\_ -> dir) model.player }
                 => []
 
+        Cultivate player ->
+            let
+                targetCoord =
+                    Coord.move player.direction player.coord
+            in
+                { model
+                    | board =
+                        if .getOption (Accessor.boardBoxStatus targetCoord) model.board == Just GroundBox then
+                            .set (Accessor.boardBoxStatus targetCoord) CultivatedBox model.board
+                        else
+                            model.board
+                }
+                    => []
+
 
 playerCanMove : Direction -> Model -> Bool
 playerCanMove dir { size, player } =
     let
         { x, y } =
-            move dir player.coord
+            Coord.move dir player.coord
     in
         0 <= x && x < size.width && 0 <= y && y < size.height
-
-
-move : Direction -> Coord -> Coord
-move dir ({ x, y } as coord) =
-    case dir of
-        Up ->
-            { coord | y = y - 1 }
-
-        Down ->
-            { coord | y = y + 1 }
-
-        Right ->
-            { coord | x = x + 1 }
-
-        Left ->
-            { coord | x = x - 1 }
 
 
 subscriptions : Model -> Sub Msg

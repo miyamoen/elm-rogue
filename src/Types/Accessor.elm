@@ -1,4 +1,4 @@
-module Accessor exposing (..)
+module Types.Accessor exposing (..)
 
 import Types exposing (..)
 import Monocle.Lens as Lens exposing (Lens)

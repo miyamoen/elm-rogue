@@ -18,6 +18,7 @@ type Msg
     = NoOp
     | MovePlayer Coord Direction
     | ChangePlayerDirection Direction
+    | Cultivate Player
 
 
 type alias Box =

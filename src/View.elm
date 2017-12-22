@@ -4,7 +4,7 @@ import Html exposing (Html)
 import Element exposing (..)
 import Element.Attributes as Attrs exposing (..)
 import Types exposing (..)
-import Accessor exposing (..)
+import Types.Accessor as Accessor
 import View.Config exposing (..)
 import View.StyleSheet exposing (..)
 import View.Svg.Symbol as Symbol exposing (Symbol(..))

@@ -11,6 +11,9 @@ subscriptions model =
     Keyboard.presses
         (\code ->
             case ( keyCodeToOrder code, model.player.direction ) of
+                ( Ok Controller.Action, _ ) ->
+                    Cultivate model.player
+
                 ( Ok Controller.Up, Up ) ->
                     MovePlayer model.player.coord Up
 
@@ -47,6 +50,9 @@ subscriptions model =
 keyCodeToOrder : KeyCode -> Result String Orders
 keyCodeToOrder code =
     case Key.fromCode code of
+        Key.A ->
+            Ok Controller.Action
+
         Key.Up ->
             Ok Controller.Up
 

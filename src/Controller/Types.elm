@@ -6,3 +6,4 @@ type Orders
     | Down
     | Right
     | Left
+    | Action

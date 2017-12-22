@@ -8,9 +8,9 @@ boxSize =
 
 boardPadding : number
 boardPadding =
-    5
+    10
 
 
 boardSpacing : number
 boardSpacing =
-    5
+    1

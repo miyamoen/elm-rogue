@@ -74,7 +74,7 @@ styleSheet =
 
 baseMoveAngleStyle : List (Property class variation)
 baseMoveAngleStyle =
-    [ strokeFill Colors.info
+    [ strokeFill Colors.ink
     , strokeWidth 7
     , fill <| rgba 0 0 0 0
     , scale 0.7 0.7 1
