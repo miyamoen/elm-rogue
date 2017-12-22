@@ -72,14 +72,16 @@ update msg model =
             let
                 targetCoord =
                     Coord.move player.direction player.coord
+
+                convert status =
+                    case status of
+                        GroundBox ->
+                            CultivatedBox
+
+                        _ ->
+                            status
             in
-                { model
-                    | board =
-                        if .getOption (Accessor.boardBoxStatus targetCoord) model.board == Just GroundBox then
-                            .set (Accessor.boardBoxStatus targetCoord) CultivatedBox model.board
-                        else
-                            model.board
-                }
+                { model | board = Optional.modify (Accessor.boardBoxStatus targetCoord) convert model.board }
                     => []
 
 
