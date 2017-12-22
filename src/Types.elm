@@ -20,8 +20,16 @@ type Msg
     | ChangePlayerDirection Direction
 
 
-type Box
+type alias Box =
+    { coord : Coord
+    , status : BoxStatus
+    }
+
+
+type BoxStatus
     = BaseBox
+    | GroundBox
+    | CultivatedBox
 
 
 type alias Coord =
@@ -29,7 +37,7 @@ type alias Coord =
 
 
 type alias Board =
-    List ( Coord, Box )
+    List Box
 
 
 type alias Size =

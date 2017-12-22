@@ -22,42 +22,38 @@ view model =
             ]
 
 
-boardColumns : Size -> List Length
-boardColumns { width } =
-    List.repeat width <| px boxSize
-
-
-boardRows : Size -> List Length
-boardRows { height } =
-    List.repeat height <| px boxSize
-
-
-board : Model -> Element Styles Variation Msg
+board : Model -> Element Styles variation Msg
 board ({ board, size } as model) =
     grid Board
         [ spacing boardSpacing, padding boardPadding ]
-        { columns = boardColumns size
-        , rows = boardRows size
+        { columns = List.repeat size.width <| px boxSize
+        , rows = List.repeat size.height <| px boxSize
         , cells = List.map (box >> cell) board
         }
         |> within [ player model.player ]
 
 
-box : ( Coord, Box ) -> GridPosition Styles Variation Msg
-box ( { x, y }, boxType ) =
-    case boxType of
-        BaseBox ->
-            { start = ( x, y )
-            , width = 1
-            , height = 1
-            , content =
-                el BoxStyle [] <|
-                    -- (text <| toString ( x, y ))
+box : Box -> GridPosition Styles variation Msg
+box { coord, status } =
+    { start = ( coord.x, coord.y )
+    , width = 1
+    , height = 1
+    , content =
+        case status of
+            BaseBox ->
+                el (BoxStyle BaseBox)
+                    [ attribute "title" <| toString coord ]
                     empty
-            }
+
+            GroundBox ->
+                el (BoxStyle GroundBox) [] empty
+
+            CultivatedBox ->
+                el (BoxStyle CultivatedBox) [] empty
+    }
 
 
-player : Player -> Element Styles Variation Msg
+player : Player -> Element Styles variation Msg
 player { coord, direction } =
     (el PlayerBoxStyle
         [ width <| px boxSize
@@ -73,14 +69,7 @@ player { coord, direction } =
             empty
     )
         |> within
-            [ el MoveAngleStyle
-                [ width <| px boxSize
-                , height <| px boxSize
-                , vary UpVar <| direction == Up
-                , vary DownVar <| direction == Down
-                , vary RightVar <| direction == Right
-                , vary LeftVar <| direction == Left
-                ]
-              <|
+            [ el (MoveAngleStyle direction)
+                [ width <| px boxSize, height <| px boxSize ]
                 Symbol.angleElement
             ]

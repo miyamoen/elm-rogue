@@ -28,6 +28,16 @@ moon =
     rgb 234 234 230
 
 
+sanae : Color
+sanae =
+    rgb 103 167 12
+
+
+kurocha : Color
+kurocha =
+    rgb 88 56 34
+
+
 primary : Color
 primary =
     rgb 151 180 206

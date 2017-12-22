@@ -1,5 +1,6 @@
 module View.StyleSheet exposing (..)
 
+import Types exposing (..)
 import View.Config exposing (..)
 import View.Colors as Colors
 import Color.Mixing as Mixing
@@ -16,27 +17,27 @@ import Color.Convert exposing (colorToCssRgba)
 type Styles
     = None
     | Board
-    | BoxStyle
+    | BoxStyle BoxStatus
     | PlayerStyle
     | PlayerBoxStyle
-    | MoveAngleStyle
+    | MoveAngleStyle Direction
 
 
-type Variation
-    = UpVar
-    | DownVar
-    | RightVar
-    | LeftVar
-
-
-styleSheet : StyleSheet Styles Variation
+styleSheet : StyleSheet Styles variation
 styleSheet =
     Style.styleSheet
         [ style None []
         , style Board
             []
-        , style BoxStyle
+        , style (BoxStyle BaseBox)
             [ Color.background Colors.moon
+            , zIndex -1
+            ]
+        , style (BoxStyle GroundBox)
+            [ Color.background Colors.sanae
+            ]
+        , style (BoxStyle CultivatedBox)
+            [ Color.background Colors.kurocha
             ]
         , style PlayerStyle
             [ zIndex 1
@@ -44,22 +45,40 @@ styleSheet =
             ]
         , style PlayerBoxStyle
             [ Transition.all ]
-        , style MoveAngleStyle
-            [ strokeFill Colors.info
-            , strokeWidth 7
-            , fill <| rgba 0 0 0 0
-
-            -- , translate 0 (-0.3 * boxSize) 0
-            -- , scale 0.7 0.7 1
-            , variation UpVar []
-            , variation DownVar
-                [ rotate <| degrees 180 ]
-            , variation RightVar
-                [ rotate <| degrees 90 ]
-            , variation LeftVar
-                [ rotate <| degrees 270 ]
-            ]
+        , style (MoveAngleStyle Up)
+            ([ rotate <| degrees 0
+             , translate 0 (-0.3 * boxSize) 0
+             ]
+                ++ baseMoveAngleStyle
+            )
+        , style (MoveAngleStyle Down)
+            ([ rotate <| degrees 180
+             , translate 0 (0.3 * boxSize) 0
+             ]
+                ++ baseMoveAngleStyle
+            )
+        , style (MoveAngleStyle Right)
+            ([ rotate <| degrees 90
+             , translate (0.3 * boxSize) 0 0
+             ]
+                ++ baseMoveAngleStyle
+            )
+        , style (MoveAngleStyle Left)
+            ([ rotate <| degrees 270
+             , translate (-0.3 * boxSize) 0 0
+             ]
+                ++ baseMoveAngleStyle
+            )
         ]
+
+
+baseMoveAngleStyle : List (Property class variation)
+baseMoveAngleStyle =
+    [ strokeFill Colors.info
+    , strokeWidth 7
+    , fill <| rgba 0 0 0 0
+    , scale 0.7 0.7 1
+    ]
 
 
 zIndex : Int -> Property class variation

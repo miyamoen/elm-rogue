@@ -6,6 +6,7 @@ import Types exposing (..)
 import Accessor exposing (..)
 import Rocket exposing ((=>), batchInit, batchUpdate)
 import Monocle.Lens as Lens
+import Monocle.Optional as Optional
 import Controller.Keyboard
 import List.Extra exposing (lift2)
 
@@ -15,14 +16,10 @@ import List.Extra exposing (lift2)
 
 initBoard : Board
 initBoard =
-    let
-        xs =
-            List.range 0 <| size.width - 1
-
-        ys =
-            List.range 0 <| size.height - 1
-    in
-        lift2 (\x y -> Coord x y => BaseBox) xs ys
+    lift2 (\x y -> Box (Coord x y) BaseBox)
+        (List.range 0 <| size.width - 1)
+        (List.range 0 <| size.height - 1)
+        |> .set (Accessor.boardBoxStatus { x = 1, y = 1 }) GroundBox
 
 
 size : Size

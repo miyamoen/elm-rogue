@@ -2,6 +2,8 @@ module Accessor exposing (..)
 
 import Types exposing (..)
 import Monocle.Lens as Lens exposing (Lens)
+import Monocle.Optional as Optional exposing (Optional)
+import List.Extra exposing (find)
 
 
 playerX : Lens Player Int
@@ -40,3 +42,33 @@ coordY =
     { get = .y
     , set = \y coord -> { coord | y = y }
     }
+
+
+boardBox : Coord -> Optional Board Box
+boardBox coord =
+    { getOption = find (\box -> box.coord == coord)
+    , set =
+        \new board ->
+            List.map
+                (\old ->
+                    if old.coord == new.coord then
+                        new
+                    else
+                        old
+                )
+                board
+    }
+
+
+boxBoxStatus : Lens Box BoxStatus
+boxBoxStatus =
+    { get = .status
+    , set = \status box -> { box | status = status }
+    }
+
+
+boardBoxStatus : Coord -> Optional Board BoxStatus
+boardBoxStatus coord =
+    Optional.composeLens
+        (boardBox coord)
+        boxBoxStatus
