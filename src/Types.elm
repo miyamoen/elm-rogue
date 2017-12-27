@@ -5,7 +5,20 @@ type alias Model =
     { board : Board
     , size : Size
     , player : Player
+    , round : Round
+    , state : GameState
     }
+
+
+type GameState
+    = WaitingPlayerAction
+    | PlayerActionResult
+    | BoxAction
+    | BoxActionResult
+
+
+type alias Round =
+    Int
 
 
 type alias Player =

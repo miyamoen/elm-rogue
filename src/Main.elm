@@ -40,6 +40,8 @@ init =
     { board = initBoard
     , size = size
     , player = initPlayer
+    , round = 0
+    , state = WaitingPlayerAction
     }
         => []
 
