@@ -13,4 +13,4 @@ boardPadding =
 
 boardSpacing : number
 boardSpacing =
-    1
+    2

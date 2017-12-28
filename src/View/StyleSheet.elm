@@ -21,6 +21,7 @@ type Styles
     | PlayerStyle
     | PlayerBoxStyle
     | MoveAngleStyle Direction
+    | MessageAreaStyle
 
 
 styleSheet : StyleSheet Styles variation
@@ -69,6 +70,9 @@ styleSheet =
              ]
                 ++ baseMoveAngleStyle
             )
+        , style MessageAreaStyle
+            [ Font.alignLeft
+            ]
         ]
 
 

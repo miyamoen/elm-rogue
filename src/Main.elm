@@ -42,6 +42,7 @@ init =
     , player = initPlayer
     , round = 0
     , state = WaitingPlayerAction
+    , messages = [ { content = "elm-rogue starts!", agent = WorldAgent } ]
     }
         => []
 
@@ -85,6 +86,9 @@ update msg model =
             in
                 { model | board = Optional.modify (Accessor.boardBoxStatus targetCoord) convert model.board }
                     => []
+
+        TransitionEnd ->
+            model => []
 
 
 playerCanMove : Direction -> Model -> Bool

@@ -3,6 +3,7 @@ module View exposing (..)
 import Html exposing (Html)
 import Element exposing (..)
 import Element.Attributes as Attrs exposing (..)
+import Element.Events exposing (on)
 import Types exposing (..)
 import Types.Accessor as Accessor
 import View.Config exposing (..)
@@ -10,22 +11,40 @@ import View.StyleSheet exposing (..)
 import View.Svg.Symbol as Symbol exposing (Symbol(..))
 import Rocket exposing ((=>))
 import Monocle.Lens as Lens
+import Json.Decode as Json
 
 
 view : Model -> Html Msg
 view model =
     Element.viewport styleSheet <|
         column None
-            []
+            [ width Attrs.fill, height Attrs.fill ]
             [ html <| Symbol.symbols
-            , board model
+            , game model
             ]
+
+
+game : Model -> Element Styles variation Msg
+game model =
+    namedGrid None
+        [ width Attrs.fill
+        , height Attrs.fill
+        , spacing 10
+        , padding 10
+        ]
+        { columns = [ percent 60, percent 40 ]
+        , rows = [ Attrs.fill => [ span 1 "board", span 1 "message" ] ]
+        , cells =
+            [ named "board" <| board model
+            , named "message" <| messageArea model.messages
+            ]
+        }
 
 
 board : Model -> Element Styles variation Msg
 board ({ board, size } as model) =
     grid Board
-        [ spacing boardSpacing, padding boardPadding ]
+        [ clip, spacing boardSpacing, padding boardPadding ]
         { columns = List.repeat size.width <| px boxSize
         , rows = List.repeat size.height <| px boxSize
         , cells = List.map (box >> cell) board
@@ -60,6 +79,7 @@ player { coord, direction } =
         , height <| px boxSize
         , moveDown <| toFloat <| boardPadding + coord.y * (boardSpacing + boxSize)
         , moveRight <| toFloat <| boardPadding + coord.x * (boardSpacing + boxSize)
+        , on "transitionend" <| Json.succeed TransitionEnd
         ]
      <|
         circle (boxSize * 0.3)
@@ -73,3 +93,14 @@ player { coord, direction } =
                 [ width <| px boxSize, height <| px boxSize ]
                 Symbol.angleElement
             ]
+
+
+messageArea : List Message -> Element Styles variation Msg
+messageArea messages =
+    column MessageAreaStyle
+        [ width Attrs.fill
+        , height Attrs.fill
+        , spacing 10
+        ]
+    <|
+        List.map (\{content, agent} -> text content) messages
