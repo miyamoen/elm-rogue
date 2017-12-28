@@ -1,5 +1,6 @@
 module Types exposing (..)
 
+
 type alias Model =
     { board : Board
     , size : Size
@@ -12,9 +13,7 @@ type alias Model =
 
 type GameState
     = WaitingPlayerAction
-    | PlayerActionResult
-    | BoxAction
-    | BoxActionResult
+    | AnimatingPlayerAction
 
 
 type alias Round =
@@ -75,6 +74,7 @@ type Agent
 
 
 type alias Message =
-    { content : String
+    { index : Int
     , agent : Agent
+    , content : String
     }

@@ -5,6 +5,7 @@ import View exposing (view)
 import Types exposing (..)
 import Types.Accessor as Accessor
 import Types.Coord as Coord
+import Types.Message as Message
 import Rocket exposing ((=>), batchInit, batchUpdate)
 import Monocle.Lens as Lens
 import Monocle.Optional as Optional
@@ -42,7 +43,7 @@ init =
     , player = initPlayer
     , round = 0
     , state = WaitingPlayerAction
-    , messages = [ { content = "elm-rogue got started!", agent = WorldAgent } ]
+    , messages = Message.init
     }
         => []
 
@@ -58,14 +59,15 @@ update msg model =
             model => []
 
         MovePlayer coord dir ->
-            { model
-                | player =
-                    if coord == model.player.coord && playerCanMove dir model then
+            if coord == model.player.coord && playerCanMove dir model then
+                { model
+                    | player =
                         Lens.modify Accessor.playerCoord (\coord -> Coord.move dir coord) model.player
-                    else
-                        model.player
-            }
-                => []
+                    , messages = Message.addPlayerMoveMessage model.player model.messages
+                }
+                    => []
+            else
+                model => []
 
         ChangePlayerDirection dir ->
             { model | player = Lens.modify Accessor.playerDirection (\_ -> dir) model.player }

@@ -34,7 +34,7 @@ game model =
         , padding 10
         ]
         { columns = [ percent 60, percent 40 ]
-        , rows = [ Attrs.fill => [ span 1 "board", span 1 "message" ] ]
+        , rows = [ percent 100 => [ span 1 "board", span 1 "message" ] ]
         , cells =
             [ named "board" <| board model
             , named "message" <| View.MessageArea.view model
