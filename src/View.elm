@@ -9,6 +9,7 @@ import Types.Accessor as Accessor
 import View.Config exposing (..)
 import View.StyleSheet exposing (..)
 import View.Svg.Symbol as Symbol exposing (Symbol(..))
+import View.MessageArea
 import Rocket exposing ((=>))
 import Monocle.Lens as Lens
 import Json.Decode as Json
@@ -36,7 +37,7 @@ game model =
         , rows = [ Attrs.fill => [ span 1 "board", span 1 "message" ] ]
         , cells =
             [ named "board" <| board model
-            , named "message" <| messageArea model.messages
+            , named "message" <| View.MessageArea.view model
             ]
         }
 
@@ -103,4 +104,4 @@ messageArea messages =
         , spacing 10
         ]
     <|
-        List.map (\{content, agent} -> text content) messages
+        List.map (\{ content, agent } -> text content) messages

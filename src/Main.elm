@@ -42,7 +42,7 @@ init =
     , player = initPlayer
     , round = 0
     , state = WaitingPlayerAction
-    , messages = [ { content = "elm-rogue starts!", agent = WorldAgent } ]
+    , messages = [ { content = "elm-rogue got started!", agent = WorldAgent } ]
     }
         => []
 
