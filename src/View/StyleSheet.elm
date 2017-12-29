@@ -41,7 +41,7 @@ styleSheet =
             ]
         , style (BoxStyle CultivatedBox)
             [ Color.background Colors.kurocha
-            ,Transition.all
+            , Transition.all
             ]
         , style PlayerStyle
             [ zIndex 1
@@ -74,16 +74,22 @@ styleSheet =
                 ++ baseMoveAngleStyle
             )
         , style MessageAreaStyle
-            [Border.all 2]
+            [ Border.all 2
+            , Border.dashed
+            , Border.rounded 4
+            ]
         , style MessageStyle
-            [Border.all 2]
+            []
         , style HeaderStyle
-            [Border.all 2]
+            [ Border.all 2
+            , Border.dashed
+            , Border.rounded 4
+            ]
         , style BoardAreaStyle
-            [Border.all 2
-            , Border.solid
-            , Border.rounded 4]
-
+            [ Border.all 2
+            , Border.dashed
+            , Border.rounded 4
+            ]
         ]
 
 

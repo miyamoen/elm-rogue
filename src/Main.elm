@@ -1,6 +1,8 @@
 module Main exposing (..)
 
 import Html
+import Task
+import Window
 import View exposing (view)
 import Types exposing (..)
 import Types.Accessor as Accessor
@@ -18,15 +20,17 @@ import List.Extra exposing (lift2)
 
 initBoard : Board
 initBoard =
-    lift2 (\x y -> Box (Coord x y) GroundBox)
-        (List.range 0 <| size.width - 1)
-        (List.range 0 <| size.height - 1)
-        |> .set (Accessor.boardBoxStatus { x = 1, y = 1 }) CultivatedBox
-
-
-size : Size
-size =
-    { width = 16, height = 16 }
+    let
+        size =
+            { width = 16, height = 16 }
+    in
+        { size = size
+        , boxes =
+            lift2 (\x y -> Box (Coord x y) GroundBox)
+                (List.range 0 <| size.width - 1)
+                (List.range 0 <| size.height - 1)
+        }
+            |> .set (Accessor.boardBoxStatus { x = 1, y = 1 }) CultivatedBox
 
 
 initPlayer : Player
@@ -39,13 +43,13 @@ initPlayer =
 init : ( Model, List (Cmd Msg) )
 init =
     { board = initBoard
-    , size = size
     , player = initPlayer
     , round = 0
     , state = WaitingPlayerAction
     , messages = Message.init
+    , windowSize = { width = 1000, height = 1000 }
     }
-        => []
+        => [ Task.perform ResizeWindow Window.size ]
 
 
 
@@ -57,6 +61,9 @@ update msg model =
     case msg of
         NoOp ->
             model => []
+
+        ResizeWindow size ->
+            { model | windowSize = size } => []
 
         MovePlayer coord dir ->
             if model.state == WaitingPlayerAction && coord == model.player.coord && playerCanMove dir model then
@@ -90,7 +97,7 @@ update msg model =
                 { model | board = Optional.modify (Accessor.boardBoxStatus targetCoord) convert model.board }
                     => []
 
-        PlayerAnimationEnd ->
+        PlayerAnimationEnd _ ->
             if model.state == AnimatingPlayerAction then
                 { model
                     | state = WaitingPlayerAction
@@ -102,18 +109,19 @@ update msg model =
 
 
 playerCanMove : Direction -> Model -> Bool
-playerCanMove dir { size, player } =
+playerCanMove dir { board, player } =
     let
         { x, y } =
             Coord.move dir player.coord
     in
-        0 <= x && x < size.width && 0 <= y && y < size.height
+        0 <= x && x < board.size.width && 0 <= y && y < board.size.height
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Controller.Keyboard.subscriptions model
+        , Window.resizes ResizeWindow
         ]
 
 

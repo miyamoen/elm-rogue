@@ -23,7 +23,7 @@ view { messages } =
 messageToElement : Message -> ( String, Element Styles variation Msg )
 messageToElement { index, agent, content } =
     (toString index
-        => row None
+        => row MessageStyle
             [ spacing 6 ]
             [ text <| agentToString agent
             , text content

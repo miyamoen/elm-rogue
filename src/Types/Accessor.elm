@@ -46,17 +46,20 @@ coordY =
 
 boardBox : Coord -> Optional Board Box
 boardBox coord =
-    { getOption = find (\box -> box.coord == coord)
+    { getOption = \{ boxes } -> find (\box -> box.coord == coord) boxes
     , set =
-        \new board ->
-            List.map
-                (\old ->
-                    if old.coord == new.coord then
-                        new
-                    else
-                        old
-                )
-                board
+        \new ({ boxes } as board) ->
+            { board
+                | boxes =
+                    List.map
+                        (\old ->
+                            if old.coord == new.coord then
+                                new
+                            else
+                                old
+                        )
+                        boxes
+            }
     }
 
 

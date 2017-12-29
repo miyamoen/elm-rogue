@@ -3,12 +3,12 @@ module View.Config exposing (..)
 
 boxSize : number
 boxSize =
-    30
+    20
 
 
 boardPadding : number
 boardPadding =
-    10
+    4
 
 
 boardSpacing : number

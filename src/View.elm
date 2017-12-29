@@ -5,15 +5,12 @@ import Element exposing (..)
 import Element.Attributes as Attrs exposing (..)
 import Element.Events exposing (on)
 import Types exposing (..)
-import Types.Accessor as Accessor
-import View.Config exposing (..)
 import View.StyleSheet exposing (..)
-import View.Svg.Symbol as Symbol exposing (Symbol(..))
 import View.MessageArea
 import View.Header
+import View.Board
+import View.Svg.Symbol as Symbol exposing (Symbol(..))
 import Rocket exposing ((=>))
-import Monocle.Lens as Lens
-import Json.Decode as Json
 
 
 view : Model -> Html Msg
@@ -34,67 +31,41 @@ game model =
         , spacing 10
         , padding 10
         ]
-        { columns = [ percent 60, percent 40 ]
-        , rows =
-            [ percent 10 => [ spanAll "header" ]
-            , percent 90 => [ span 1 "board", span 1 "message" ]
-            ]
+        { columns = columns model.windowSize
+        , rows = rows model.windowSize
         , cells =
-            [ named "board" <| board model
+            [ named "board" <| View.Board.view model
             , named "message" <| View.MessageArea.view model
             , named "header" <| View.Header.view model
             ]
         }
 
 
-board : Model -> Element Styles variation Msg
-board ({ board, size } as model) =
-    grid BoardAreaStyle
-        [ clip, spacing boardSpacing, padding boardPadding ]
-        { columns = List.repeat size.width <| px boxSize
-        , rows = List.repeat size.height <| px boxSize
-        , cells = List.map (box >> cell) board
-        }
-        |> within [ player model.player ]
+spacingSize : number
+spacingSize =
+    10
 
 
-box : Box -> GridPosition Styles variation Msg
-box { coord, status } =
-    { start = ( coord.x, coord.y )
-    , width = 1
-    , height = 1
-    , content =
-        case status of
-            BaseBox ->
-                el (BoxStyle BaseBox)
-                    [ attribute "title" <| toString coord ]
-                    empty
-
-            GroundBox ->
-                el (BoxStyle GroundBox) [] empty
-
-            CultivatedBox ->
-                el (BoxStyle CultivatedBox) [] empty
-    }
+paddingSize : number
+paddingSize =
+    10
 
 
-player : Player -> Element Styles variation Msg
-player { coord, direction } =
-    (el PlayerBoxStyle
-        [ width <| px boxSize
-        , height <| px boxSize
-        , moveDown <| toFloat <| boardPadding + coord.y * (boardSpacing + boxSize)
-        , moveRight <| toFloat <| boardPadding + coord.x * (boardSpacing + boxSize)
-        , on "transitionend" <| Json.succeed PlayerAnimationEnd
+columns : Size -> List Length
+columns { width } =
+    let
+        restWidth =
+            (toFloat width) - 1 * spacingSize - 2 * paddingSize
+    in
+        [ px <| restWidth * 0.6, px <| restWidth * 0.4 ]
+
+
+rows : Size -> List ( Length, List NamedGridPosition )
+rows { height } =
+    let
+        restHeight =
+            (toFloat height) - 1 * spacingSize - 2 * paddingSize
+    in
+        [ px (restHeight * 0.1) => [ spanAll "header" ]
+        , px (restHeight * 0.9) => [ span 1 "board", span 1 "message" ]
         ]
-     <|
-        circle (boxSize * 0.3)
-            PlayerStyle
-            [ center, verticalCenter ]
-            empty
-    )
-        |> within
-            [ el (MoveAngleStyle direction)
-                [ width <| px boxSize, height <| px boxSize ]
-                Symbol.angleElement
-            ]

@@ -3,11 +3,11 @@ module Types exposing (..)
 
 type alias Model =
     { board : Board
-    , size : Size
     , player : Player
     , round : Round
     , state : GameState
     , messages : List Message
+    , windowSize : Size
     }
 
 
@@ -28,10 +28,11 @@ type alias Player =
 
 type Msg
     = NoOp
+    | ResizeWindow Size
     | MovePlayer Coord Direction
     | ChangePlayerDirection Direction
     | Cultivate Player
-    | PlayerAnimationEnd
+    | PlayerAnimationEnd String
 
 
 type alias Box =
@@ -51,7 +52,9 @@ type alias Coord =
 
 
 type alias Board =
-    List Box
+    { boxes : List Box
+    , size : Size
+    }
 
 
 type alias Size =
