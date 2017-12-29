@@ -16,30 +16,32 @@ import Color.Convert exposing (colorToCssRgba)
 
 type Styles
     = None
-    | Board
     | BoxStyle BoxStatus
     | PlayerStyle
     | PlayerBoxStyle
     | MoveAngleStyle Direction
     | MessageAreaStyle
     | MessageStyle
+    | HeaderStyle
+    | BoardAreaStyle
 
 
 styleSheet : StyleSheet Styles variation
 styleSheet =
     Style.styleSheet
         [ style None []
-        , style Board
-            []
         , style (BoxStyle BaseBox)
             [ Color.background Colors.moon
+            , Transition.all
             , zIndex -1
             ]
         , style (BoxStyle GroundBox)
             [ Color.background Colors.sanae
+            , Transition.all
             ]
         , style (BoxStyle CultivatedBox)
             [ Color.background Colors.kurocha
+            ,Transition.all
             ]
         , style PlayerStyle
             [ zIndex 1
@@ -72,9 +74,16 @@ styleSheet =
                 ++ baseMoveAngleStyle
             )
         , style MessageAreaStyle
-            []
+            [Border.all 2]
         , style MessageStyle
-            [ Transition.all ]
+            [Border.all 2]
+        , style HeaderStyle
+            [Border.all 2]
+        , style BoardAreaStyle
+            [Border.all 2
+            , Border.solid
+            , Border.rounded 4]
+
         ]
 
 

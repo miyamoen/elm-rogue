@@ -10,6 +10,7 @@ import View.Config exposing (..)
 import View.StyleSheet exposing (..)
 import View.Svg.Symbol as Symbol exposing (Symbol(..))
 import View.MessageArea
+import View.Header
 import Rocket exposing ((=>))
 import Monocle.Lens as Lens
 import Json.Decode as Json
@@ -34,17 +35,21 @@ game model =
         , padding 10
         ]
         { columns = [ percent 60, percent 40 ]
-        , rows = [ percent 100 => [ span 1 "board", span 1 "message" ] ]
+        , rows =
+            [ percent 10 => [ spanAll "header" ]
+            , percent 90 => [ span 1 "board", span 1 "message" ]
+            ]
         , cells =
             [ named "board" <| board model
             , named "message" <| View.MessageArea.view model
+            , named "header" <| View.Header.view model
             ]
         }
 
 
 board : Model -> Element Styles variation Msg
 board ({ board, size } as model) =
-    grid Board
+    grid BoardAreaStyle
         [ clip, spacing boardSpacing, padding boardPadding ]
         { columns = List.repeat size.width <| px boxSize
         , rows = List.repeat size.height <| px boxSize
@@ -80,13 +85,12 @@ player { coord, direction } =
         , height <| px boxSize
         , moveDown <| toFloat <| boardPadding + coord.y * (boardSpacing + boxSize)
         , moveRight <| toFloat <| boardPadding + coord.x * (boardSpacing + boxSize)
-        , on "transitionend" <| Json.succeed TransitionEnd
+        , on "transitionend" <| Json.succeed PlayerAnimationEnd
         ]
      <|
         circle (boxSize * 0.3)
             PlayerStyle
             [ center, verticalCenter ]
-            -- (text "player")
             empty
     )
         |> within
@@ -94,14 +98,3 @@ player { coord, direction } =
                 [ width <| px boxSize, height <| px boxSize ]
                 Symbol.angleElement
             ]
-
-
-messageArea : List Message -> Element Styles variation Msg
-messageArea messages =
-    column MessageAreaStyle
-        [ width Attrs.fill
-        , height Attrs.fill
-        , spacing 10
-        ]
-    <|
-        List.map (\{ content, agent } -> text content) messages

@@ -59,11 +59,12 @@ update msg model =
             model => []
 
         MovePlayer coord dir ->
-            if coord == model.player.coord && playerCanMove dir model then
+            if model.state == WaitingPlayerAction && coord == model.player.coord && playerCanMove dir model then
                 { model
                     | player =
                         Lens.modify Accessor.playerCoord (\coord -> Coord.move dir coord) model.player
                     , messages = Message.addPlayerMoveMessage model.player model.messages
+                    , state = AnimatingPlayerAction
                 }
                     => []
             else
@@ -89,8 +90,15 @@ update msg model =
                 { model | board = Optional.modify (Accessor.boardBoxStatus targetCoord) convert model.board }
                     => []
 
-        TransitionEnd ->
-            model => []
+        PlayerAnimationEnd ->
+            if model.state == AnimatingPlayerAction then
+                { model
+                    | state = WaitingPlayerAction
+                    , round = model.round + 1
+                }
+                    => []
+            else
+                model => []
 
 
 playerCanMove : Direction -> Model -> Bool

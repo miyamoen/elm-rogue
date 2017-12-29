@@ -31,7 +31,7 @@ type Msg
     | MovePlayer Coord Direction
     | ChangePlayerDirection Direction
     | Cultivate Player
-    | TransitionEnd
+    | PlayerAnimationEnd
 
 
 type alias Box =

@@ -13,6 +13,7 @@ view : Model -> Element Styles variation Msg
 view { messages } =
     Keyed.column MessageAreaStyle
         [ spacing 10
+        , padding 10
         , scrollbars
         ]
     <|
