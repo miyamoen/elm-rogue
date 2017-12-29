@@ -1,4 +1,4 @@
-module View.Header exposing (view)
+module View.Footer exposing (view)
 
 import Types exposing (..)
 import View.StyleSheet exposing (..)
@@ -15,12 +15,5 @@ view { round, state } =
         [ spacing 10
         , padding 10
         ]
-        [ image TitleLogoStyle [ width <| px 100 ] { src = "/title.png", caption = "elm-rogue" }
-        , text <| toString round
-        , text <| toString state
+        [ newTab "http://logomakr.com" <| text "LogoMakr.com"
         ]
-
-
-titleSize : Size
-titleSize =
-    { width = 1050, height = 327 }

@@ -24,6 +24,7 @@ type Styles
     | MessageStyle
     | HeaderStyle
     | BoardAreaStyle
+    | TitleLogoStyle
 
 
 styleSheet : StyleSheet Styles variation
@@ -90,6 +91,8 @@ styleSheet =
             , Border.dashed
             , Border.rounded 4
             ]
+        , style TitleLogoStyle
+            [ prop "object-fit" "contain" ]
         ]
 
 

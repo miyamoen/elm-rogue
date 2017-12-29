@@ -8,6 +8,7 @@ import Types exposing (..)
 import View.StyleSheet exposing (..)
 import View.MessageArea
 import View.Header
+import View.Footer
 import View.Board
 import View.Svg.Symbol as Symbol exposing (Symbol(..))
 import Rocket exposing ((=>))
@@ -37,6 +38,7 @@ game model =
             [ named "board" <| View.Board.view model
             , named "message" <| View.MessageArea.view model
             , named "header" <| View.Header.view model
+            , named "footer" <| View.Footer.view model
             ]
         }
 
@@ -64,8 +66,14 @@ rows : Size -> List ( Length, List NamedGridPosition )
 rows { height } =
     let
         restHeight =
-            (toFloat height) - 1 * spacingSize - 2 * paddingSize
+            (toFloat height) - 2 * spacingSize - 2 * paddingSize
     in
         [ px (restHeight * 0.1) => [ spanAll "header" ]
-        , px (restHeight * 0.9) => [ span 1 "board", span 1 "message" ]
+        , px (restHeight * 0.8) => [ span 1 "board", span 1 "message" ]
+        , px (restHeight * 0.1) => [ span 1 "board", span 1 "footer" ]
         ]
+
+
+
+-- 824.67
+-- 59.800000000000004 + 59.800000000000004 + 478.40000000000003

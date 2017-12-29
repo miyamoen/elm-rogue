@@ -10,7 +10,6 @@ onTransitionEnd tagger =
     on "transitionend" <| Json.map tagger propertyName
 
 
-
 propertyName : Json.Decoder String
 propertyName =
     Json.field "propertyName" Json.string
