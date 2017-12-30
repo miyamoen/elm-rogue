@@ -26,7 +26,7 @@ view model =
 
 game : Model -> Element Styles variation Msg
 game model =
-    namedGrid None
+    namedGrid MainStyle
         [ width Attrs.fill
         , height Attrs.fill
         , spacing 10

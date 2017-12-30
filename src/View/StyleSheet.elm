@@ -16,6 +16,7 @@ import Color.Convert exposing (colorToCssRgba)
 
 type Styles
     = None
+    | MainStyle
     | BoxStyle BoxStatus
     | PlayerStyle
     | PlayerBoxStyle
@@ -31,6 +32,8 @@ styleSheet : StyleSheet Styles variation
 styleSheet =
     Style.styleSheet
         [ style None []
+        , style MainStyle
+            []
         , style (BoxStyle BaseBox)
             [ Color.background Colors.moon
             , Transition.all
@@ -123,3 +126,14 @@ strokeFill color =
 strokeWidth : number -> Property class variation
 strokeWidth w =
     prop "stroke-width" <| toString w
+
+
+kari : Property class variation
+kari =
+    Transition.transitions
+        [ { delay = 0
+          , duration = 1000
+          , easing = "ease"
+          , props = [ "grid-template-columns", "grid-template-rows" ]
+          }
+        ]

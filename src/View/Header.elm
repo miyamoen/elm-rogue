@@ -19,8 +19,3 @@ view { round, state } =
         , text <| toString round
         , text <| toString state
         ]
-
-
-titleSize : Size
-titleSize =
-    { width = 1050, height = 327 }
