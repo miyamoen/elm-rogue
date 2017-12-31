@@ -8,7 +8,7 @@ import Controller.Types as Controller exposing (Orders)
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Keyboard.presses
+    Keyboard.downs
         (\code ->
             case ( keyCodeToOrder code, model.player.direction ) of
                 ( Ok Controller.Action, _ ) ->
